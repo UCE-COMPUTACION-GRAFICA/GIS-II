@@ -441,9 +441,8 @@
 
               }
 
-              var button = document.getElementById("botonBorrar");
-              button.onClick = function (event) {
-
+              
+              function onButon(event){
                 
                 event.preventDefault();
                 poblados.setVisible(false);
@@ -459,7 +458,6 @@
                 limite.setVisible(false);
 
               }
-
 
 
 
@@ -528,7 +526,7 @@
                 </label>
 
 
-                <a href="#" id="botonBorrar" class="u-btn u-button-style u-palette-2-base u-btn-2">
+                <a href="#" id="botonBorrar" onclick="onButon(event)"  class="u-btn u-button-style u-palette-2-base u-btn-2">
 
                   BORRAR MAPA
 
