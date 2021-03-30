@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html style="font-size: 16px;">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="keywords" content="Universidad Central del Ecuador, VISOR GEOGRÁFICO">
+  <meta name="description" content="">
+  <meta name="page_type" content="np-template-header-footer-from-plugin">
+  <title>Casa</title>
+  <link rel="stylesheet" href="nicepage.css" media="screen">
+  <link rel="stylesheet" href="Casa.css" media="screen">
+  <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
+  <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
+  <meta name="generator" content="Nicepage 3.10.2, nicepage.com">
+  <link id="u-theme-google-font" rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i">
+
+  <style>
+    .map {
+      height: 700px;
+      width: 700px;
+      background: #bbe2fc;
+      border: 1px dotted black;
+      cursor: pointer;
+
+    }
+  </style>
+
+
+  <script src="http://localhost:8080/geoserver/openlayers3/ol.js" type="text/javascript"></script>
+
+  <script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": "",
+		"url": "index.html"
+}</script>
+  <meta property="og:title" content="Casa">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#478ac9">
+  <link rel="canonical" href="index.html">
+  <meta property="og:url" content="index.html">
+</head>
+
+<body data-home-page="Casa.html" data-home-page-title="Casa" class="u-body u-overlap u-overlap-contrast">
+  <header class="u-clearfix u-header u-sticky u-header" id="sec-a0ab">
+    <div class="u-clearfix u-sheet u-sheet-1">
+      <h1 class="u-align-center-lg u-align-center-md u-align-center-sm u-align-center-xs u-text u-text-1"
+        data-animation-name="fadeIn" data-animation-duration="1000" data-animation-delay="0"
+        data-animation-direction="Down">Universidad Central del Ecuador</h1>
+      <img src="images/uce-universidad-central-del-eo.png" alt="" class="u-image u-image-default u-image-1"
+        data-image-width="299" data-image-height="149">
+      <h3 class="u-align-center u-text u-text-2" data-animation-name="fadeIn" data-animation-duration="1000"
+        data-animation-delay="0" data-animation-direction="">Facultad de Ingeniería y Ciencias Aplicadas</h3>
+      <h5 class="u-text u-text-3" data-animation-name="fadeIn" data-animation-duration="1000" data-animation-delay="0"
+        data-animation-direction="">Ingeniería en Computación Gráfica</h5>
+      <h6 class="u-text u-text-4" data-animation-name="fadeIn" data-animation-duration="1000" data-animation-delay="0"
+        data-animation-direction="">Sistemas de Información Geográfica II</h6>
+    </div>
+  </header>
+  <section class="u-align-center u-clearfix u-image u-shading u-section-1" src="" data-image-width="256"
+    data-image-height="256" id="sec-17cf">
+    <div class="u-clearfix u-sheet u-sheet-1">
+      <h1 class="u-text u-title u-text-1">VISOR GEOGRÁFICO</h1>
+      <p class="u-large-text u-text u-text-variant u-text-2">Capas de Mapas pertenecientes a la ciudad de Ibarra.</p>
+    </div>
+  </section>
+  <section class="u-clearfix u-section-2" id="sec-80d7">
+    <div class="u-clearfix u-sheet u-sheet-1">
+      <div class="u-clearfix u-expanded-width u-layout-wrap u-layout-wrap-1">
+        <div class="u-layout">
+          <div id="mouse-position"></div>
+          <div class="u-layout-row">
+
+            <!--Para la creación de la división del Mapa-->
+            <div id="map" class="map"></div>
+
+
+
+            <div class="u-container-layout u-valign-top u-container-layout-1"></div>
+
+
+            <!--Script para el Mapa-->
+            <script type="text/javascript">
+              var format = "image/png";
+              var bounds = [829997.6875, 17467.5,
+                855074.9375, 48128.625];
+
+              var mousePositionControl = new ol.control.MousePosition({
+                className: 'custom-mouse-position',
+                target: document.getElementById('mouse-position'),
+                coordinateFormat: ol.coordinate.createStringXY(5),
+                undefinedHTML: '&nbsp;'
+              });
+
+
+
+
+
+
+
+
+
+
+
+              //para límite
+
+              var limite = new ol.layer.Image({
+                visible: false,
+                source: new ol.source.ImageWMS({
+                  ratio: 1,
+                  url: "http://localhost:8080/geoserver/base_indicador/wms",
+                  params: {
+                    'FORMAT': format,
+                    'VERSION': '1.1.1',
+                    "STYLES": '',
+                    "LAYERS": 'base_indicador:limite_parroquial',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  },
+
+                })
+              });
+
+
+              //para centros poblados
+              var poblados = new ol.layer.Image({
+                visible: false,
+                source: new ol.source.ImageWMS({
+                  ratio: 1,
+                  url: 'http://localhost:8080/geoserver/base_indicador/wms',
+                  params: {
+                    'FORMAT': format,
+                    'VERSION': '1.1.1',
+                    "STYLES": '',
+                    "LAYERS": 'base_indicador:Centros_Poblados',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  }
+                })
+              });
+              var poblados2 = new ol.layer.Tile({
+                visible: false,
+                source: new ol.source.TileWMS({
+                  url: 'http://localhost:8080/geoserver/base_indicador/wms',
+                  params: {
+                    'FORMAT': format,
+                    'VERSION': '1.1.1',
+                    tiled: true,
+                    "STYLES": '',
+                    "LAYERS": 'base_indicador:Centros_Poblados',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                    tilesOrigin: 838027.3125 + "," + 33276.4453125
+                  }
+                })
+              });
+
+              //para lagos
+              var lagos = new ol.layer.Image({
+                visible: false,
+                source: new ol.source.ImageWMS({
+                  ratio: 1,
+                  url: 'http://localhost:8080/geoserver/base_indicador/wms',
+                  params: {
+                    'FORMAT': format,
+                    'VERSION': '1.1.1',
+                    "STYLES": '',
+                    "LAYERS": 'base_indicador:lagos_lagunas',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  }
+                })
+              });
+              var lagos2 = new ol.layer.Tile({
+                visible: false,
+                source: new ol.source.TileWMS({
+                  url: 'http://localhost:8080/geoserver/base_indicador/wms',
+                  params: {
+                    'FORMAT': format,
+                    'VERSION': '1.1.1',
+                    tiled: true,
+                    "STYLES": '',
+                    "LAYERS": 'base_indicador:lagos_lagunas',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                    tilesOrigin: 839025.25 + "," + 19941.7578125
+                  }
+                })
+              });
+
+              //para ríos Simples
+
+              var riosSimples = new ol.layer.Image({
+                visible: false,
+                source: new ol.source.ImageWMS({
+                  ratio: 1,
+                  url: 'http://localhost:8080/geoserver/base_indicador/wms',
+                  params: {
+                    'FORMAT': format,
+                    'VERSION': '1.1.1',
+                    "STYLES": '',
+                    "LAYERS": 'base_indicador:rios_simples',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  }
+                })
+              });
+              var riosSimples2 = new ol.layer.Tile({
+                visible: false,
+                source: new ol.source.TileWMS({
+                  url: 'http://localhost:8080/geoserver/base_indicador/wms',
+                  params: {
+                    'FORMAT': format,
+                    'VERSION': '1.1.1',
+                    tiled: true,
+                    "STYLES": '',
+                    "LAYERS": 'base_indicador:rios_simples',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                    tilesOrigin: 830174.375 + "," + 18123.482421875
+                  }
+                })
+              });
+
+
+              //para ríos dobles
+
+              var riosDobles = new ol.layer.Image({
+                visible: false,
+                source: new ol.source.ImageWMS({
+                  ratio: 1,
+                  url: 'http://localhost:8080/geoserver/base_indicador/wms',
+                  params: {
+                    'FORMAT': format,
+                    'VERSION': '1.1.1',
+                    "STYLES": '',
+                    "LAYERS": 'base_indicador:rios_dobles',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  }
+                })
+              });
+              var riosDobles2 = new ol.layer.Tile({
+                visible: false,
+                source: new ol.source.TileWMS({
+                  url: 'http://localhost:8080/geoserver/base_indicador/wms',
+                  params: {
+                    'FORMAT': format,
+                    'VERSION': '1.1.1',
+                    tiled: true,
+                    "STYLES": '',
+                    "LAYERS": 'base_indicador:rios_dobles',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                    tilesOrigin: 835939.25 + "," + 26162.73046875
+                  }
+                })
+              });
+
+
+              var vias = new ol.layer.Image({
+                visible: false,
+                source: new ol.source.ImageWMS({
+                  ratio: 1,
+                  url: 'http://localhost:8080/geoserver/base_indicador/wms',
+                  params: {
+                    'FORMAT': format,
+                    'VERSION': '1.1.1',
+                    "STYLES": '',
+                    "LAYERS": 'base_indicador:vias',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                  }
+                })
+              });
+              var vias2 = new ol.layer.Tile({
+                visible: false,
+                source: new ol.source.TileWMS({
+                  url: 'http://localhost:8080/geoserver/base_indicador/wms',
+                  params: {
+                    'FORMAT': format,
+                    'VERSION': '1.1.1',
+                    tiled: true,
+                    "STYLES": '',
+                    "LAYERS": 'base_indicador:vias',
+                    "exceptions": 'application/vnd.ogc.se_inimage',
+                    tilesOrigin: 829997.6875 + "," + 26043.419921875
+                  }
+                })
+              });
+
+
+
+
+
+              var projection = new ol.proj.Projection({
+                code: 'EPSG:32617',
+                units: 'm',
+                global: false
+              });
+
+
+              var map = new ol.Map({
+                controls: ol.control.defaults({
+                  attribution: false
+                }).extend([mousePositionControl]),
+                target: 'map',
+                layers: [limite,
+                  riosDobles2,
+                  riosDobles2,
+                  poblados,
+                  poblados2,
+                  riosSimples,
+                  riosSimples2,
+                  lagos,
+                  lagos2,
+                  vias, vias2],
+                view: new ol.View({
+                  projection: projection
+                })
+              });
+
+              map.getView().fit(bounds, map.getSize());
+
+
+
+              //mapa de centros Poblados
+              function onSwitchChange(event) {
+                if (event.target.checked == true) {
+
+                  limite.setVisible(true);
+
+                  //mis_layers.push(limite)
+
+
+                  // graficarMapa(mis_layers)
+
+                } else {
+                  limite.setVisible(false);
+
+                }
+
+              }
+              function onSwitchChange2(event) {
+                if (event.target.checked == true) {
+
+
+                  lagos.setVisible(true);
+                  lagos2.setVisible(true);
+
+
+                } else {
+                  lagos.setVisible(false);
+                  lagos2.setVisible(false);
+
+                }
+
+              }
+              function onSwitchChange3(event) {
+                if (event.target.checked == true) {
+
+                  riosSimples.setVisible(true);
+                  riosSimples2.setVisible(true);
+
+
+                } else {
+
+                  riosSimples.setVisible(false);
+                  riosSimples2.setVisible(false);
+                }
+
+              }
+              function onSwitchChange4(event) {
+                if (event.target.checked == true) {
+
+                  vias.setVisible(true);
+                  vias2.setVisible(true);
+
+
+
+                } else {
+
+                  vias.setVisible(false);
+                }
+
+              }
+
+
+              function onSwitchChange5(event) {
+                if (event.target.checked == true) {
+
+                  riosDobles.setVisible(true);
+                  riosDobles2.setVisible(true);
+
+
+                } else {
+                  riosDobles.setVisible(false);
+                  riosDobles2.setVisible(false);
+                }
+
+              }
+              function onSwitchChange6(event) {
+                if (event.target.checked == true) {
+                  poblados.setVisible(true);
+                  poblados2.setVisible(true);
+
+
+
+
+                } else {
+                  poblados.setVisible(false);
+                  poblados2.setVisible(false);
+
+                }
+
+              }
+
+              function onSwitchChange7(event) {
+                if (event.target.checked == true) {
+
+                  poblados.setVisible(true);
+                  poblados2.setVisible(true);
+                  riosDobles.setVisible(true);
+                  riosDobles2.setVisible(true);
+                  vias.setVisible(true);
+                  riosSimples.setVisible(true);
+                  riosSimples2.setVisible(true);
+                  lagos.setVisible(true);
+                  lagos2.setVisible(true);
+                  limite.setVisible(true);
+
+
+
+                } else {
+
+                  poblados.setVisible(false);
+                  poblados2.setVisible(false);
+                  riosDobles.setVisible(false);
+                  riosDobles2.setVisible(false);
+                  vias.setVisible(false);
+                  vias2.setVisible(false);
+                  riosSimples.setVisible(false);
+                  riosSimples2.setVisible(false);
+                  lagos.setVisible(false);
+                  lagos2.setVisible(false);
+                  limite.setVisible(false);
+
+                }
+
+              }
+
+              var button = document.getElementById("botonBorrar");
+              button.onClick = function (event) {
+
+                
+                event.preventDefault();
+                poblados.setVisible(false);
+                poblados2.setVisible(false);
+                riosDobles.setVisible(false);
+                riosDobles2.setVisible(false);
+                vias.setVisible(false);
+                vias2.setVisible(false);
+                riosSimples.setVisible(false);
+                riosSimples2.setVisible(false);
+                lagos.setVisible(false);
+                lagos2.setVisible(false);
+                limite.setVisible(false);
+
+              }
+
+
+
+
+
+            </script>
+
+
+            <div class="u-container-style u-layout-cell u-size-20 u-layout-cell-2">
+              <div class="u-container-layout u-container-layout-2">
+                <a href="#" class="u-btn u-button-style u-btn-1">Visualizar MAPA</a>
+                <p class=" u-text u-text-default u-text-1">Puede elegir entre las distintas capas de Mapas:</p>
+
+
+                <!--Para la creación de Switchs-->
+                <label id="switch_centros" class="switchBtn">
+                  <input type="checkbox" onchange="onSwitchChange(event)">
+                  <div class="slide round">Límite Parroquial</div>
+
+
+                </label>
+
+
+
+
+                <label id="switch_lagos " class="switchBtn">
+                  <input type="checkbox" onchange="onSwitchChange2(event)">
+
+                  <div class="slide round">Lagos Lagunas</div>
+
+
+                </label>
+
+                <label id="switch_riosS" class="switchBtn">
+                  <input type="checkbox" onchange="onSwitchChange3(event)">
+
+                  <div class="slide round">Ríos Simples</div>
+
+                </label>
+
+                <label id="switch_vias" class="switchBtn">
+                  <input type="checkbox" onchange="onSwitchChange4(event)">
+
+                  <div class="slide round">Vías</div>
+
+                </label>
+
+                <label id="switch_riosD" class="switchBtn">
+                  <input type="checkbox" onchange="onSwitchChange5(event)">
+
+                  <div class="slide round">Ríos Dobles</div>
+
+                </label>
+
+                <label id="switch_limite" class="switchBtn">
+                  <input type="checkbox" onchange="onSwitchChange6(event)">
+
+                  <div class="slide round">Centros Poblacionales</div>
+
+                </label>
+
+                <label id="switch_todo" class="switchBtn">
+                  <input type="checkbox" onchange="onSwitchChange7(event)">
+
+                  <div class="slide round">Todos</div>
+
+                </label>
+
+
+                <a href="#" id="botonBorrar" class="u-btn u-button-style u-palette-2-base u-btn-2">
+
+                  BORRAR MAPA
+
+                </a>
+
+
+                
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="nodelist"><em> Pase el mouse para obtener coordenadas</em></div>
+    </div>
+
+  </section>
+  <section class="u-align-center u-clearfix u-section-3" id="sec-6c8d">
+    <div class="u-clearfix u-sheet u-sheet-1"></div>
+  </section>
+  <style class="u-overlap-style">
+    .u-overlap:not(.u-sticky-scroll) .u-header {
+      background-image: linear-gradient(#478ac9, #2cccc4) !important
+    }
+  </style>
+
+
+
+
+
+
+  <footer class="u-align-center u-clearfix u-footer u-grey-80 u-footer" id="sec-aa13">
+    <div class="u-clearfix u-sheet u-sheet-1">
+      <p class="u-small-text u-text u-text-variant u-text-1">Desarrollado por Joana Estefanía Nicolalde
+        Perugachi<br>2020-2021
+      </p>
+    </div>
+
+
+
+
+  </footer>
+  <section class="u-backlink u-clearfix u-grey-80">
+    <a class="u-link" href="https://www.facebook.com/profile.php?id=100009218776586" target="_blank">
+      <span>Estefy Nikolalde</span>
+
+  </section>
+
+
+
+
+
+
+</body>
+
+</html>
