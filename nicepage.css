@@ -17705,7 +17705,7 @@ a.pswp__share--download:hover {
   background: none;
   margin: 0;
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 620px) {
   .pswp__preloader {
     position: relative;
     left: auto;
@@ -32570,7 +32570,7 @@ a.u-link.u-text-hover-grey-90:hover {
 .switchBtn {
     position: relative;
     display: inline-block;
-    width: 180px;
+    width: 210px;
     height: 37px;
 }
 .switchBtn input {display:none;}
@@ -32592,7 +32592,7 @@ a.u-link.u-text-hover-grey-90:hover {
     content: "";
     height: 26px;
     width: 26px;
-    left: 150px;
+    left: 170px;
     bottom: 4px;
     background-color: white;
     -webkit-transition: .4s;
@@ -32617,3 +32617,13 @@ input:checked + .slide:before {
 .slide.round:before {
     border-radius: 50%;
 }
+
+
+@media screen and (min-width:1400px) {
+  #warp {
+     -webkit-transform:scale(1.2);
+     -webkit-transform-origin:50% 0%;
+   transform:scale(1.2);
+   transform-origin:50% 0%;
+   }
+ }

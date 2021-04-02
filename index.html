@@ -2,7 +2,7 @@
 <html style="font-size: 16px;">
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
   <meta name="keywords" content="Universidad Central del Ecuador, VISOR GEOGRÁFICO">
   <meta name="description" content="">
@@ -78,11 +78,15 @@
 
 
 
+
             <div class="u-container-layout u-valign-top u-container-layout-1"></div>
 
 
             <!--Script para el Mapa-->
             <script type="text/javascript">
+
+
+
               var format = "image/png";
               var bounds = [829997.6875, 17467.5,
                 855074.9375, 48128.625];
@@ -298,21 +302,26 @@
                 }).extend([mousePositionControl]),
                 target: 'map',
                 layers: [limite,
-                  riosDobles2,
-                  riosDobles2,
+                  vias, vias2,
+
                   poblados,
                   poblados2,
                   riosSimples,
                   riosSimples2,
+                  riosDobles2,
+                  riosDobles2,
                   lagos,
-                  lagos2,
-                  vias, vias2],
+                  lagos2
+                ],
                 view: new ol.View({
                   projection: projection
                 })
               });
 
               map.getView().fit(bounds, map.getSize());
+
+
+
 
 
 
@@ -373,6 +382,7 @@
                 } else {
 
                   vias.setVisible(false);
+                  vias2.setVisible(false);
                 }
 
               }
@@ -406,44 +416,35 @@
                 }
 
               }
+              var intro = document.getElementById('map');
 
+
+
+              //para cambiar los colores de fondo
               function onSwitchChange7(event) {
                 if (event.target.checked == true) {
 
-                  poblados.setVisible(true);
-                  poblados2.setVisible(true);
-                  riosDobles.setVisible(true);
-                  riosDobles2.setVisible(true);
-                  vias.setVisible(true);
-                  riosSimples.setVisible(true);
-                  riosSimples2.setVisible(true);
-                  lagos.setVisible(true);
-                  lagos2.setVisible(true);
-                  limite.setVisible(true);
 
+                  intro.style.backgroundColor = '#BAF8FA'
+                  intro.style.backgroundColor = 'radial-gradient(rgba(0,0,1,1), rgba(0,0,0.8,0.8), rgba(0,1,1,0.5) 80%';
 
 
                 } else {
 
-                  poblados.setVisible(false);
-                  poblados2.setVisible(false);
-                  riosDobles.setVisible(false);
-                  riosDobles2.setVisible(false);
-                  vias.setVisible(false);
-                  vias2.setVisible(false);
-                  riosSimples.setVisible(false);
-                  riosSimples2.setVisible(false);
-                  lagos.setVisible(false);
-                  lagos2.setVisible(false);
-                  limite.setVisible(false);
+
+                  intro.style.background = '#bbe2fc'
+
+
+
+
 
                 }
 
               }
 
               
-              function onButon(event){
-                
+              function onButon(event) {
+
                 event.preventDefault();
                 poblados.setVisible(false);
                 poblados2.setVisible(false);
@@ -457,9 +458,34 @@
                 lagos2.setVisible(false);
                 limite.setVisible(false);
 
+
+                //para descheck los butoons
+
+                $("#switch_centros").prop("checked", false); 
+                $("#switch_lagos").prop("checked", false); 
+                $("#switch_riosS").prop("checked", false); 
+                $("#switch_vias").prop("checked", false); 
+                $("#switch_riosD").prop("checked", false); 
+                $("#switch_limite").prop("checked", false); 
+               
+                
+
               }
 
+              function onButonVisualizar(event) {
 
+                poblados.setVisible(true);
+                poblados2.setVisible(true);
+                riosDobles.setVisible(true);
+                riosDobles2.setVisible(true);
+                vias.setVisible(true);
+                riosSimples.setVisible(true);
+                riosSimples2.setVisible(true);
+                lagos.setVisible(true);
+                lagos2.setVisible(true);
+                limite.setVisible(true);
+
+              }
 
 
             </script>
@@ -467,7 +493,8 @@
 
             <div class="u-container-style u-layout-cell u-size-20 u-layout-cell-2">
               <div class="u-container-layout u-container-layout-2">
-                <a href="#" class="u-btn u-button-style u-btn-1">Visualizar MAPA</a>
+                <a id="boton_visualizar" onclick="onButonVisualizar(event)"
+                  class="u-btn u-button-style u-btn-1">VISUALIZAR MAPA</a>
                 <p class=" u-text u-text-default u-text-1">Puede elegir entre las distintas capas de Mapas:</p>
 
 
@@ -518,22 +545,35 @@
 
                 </label>
 
+
+
+                <div>
+
+                  ...................................................
+                </div>
+
                 <label id="switch_todo" class="switchBtn">
                   <input type="checkbox" onchange="onSwitchChange7(event)">
 
-                  <div class="slide round">Todos</div>
+
+                  <div class="slide"> Cambiar Fondo </div>
+
 
                 </label>
 
 
-                <a  id="botonBorrar" onclick="onButon(event)"  class="u-btn u-button-style u-palette-2-base u-btn-2">
 
-                  BORRAR MAPAS
+
+
+
+                <a id="botonBorrar" onclick="onButon(event)" class="u-btn u-button-style u-palette-2-base u-btn-2">
+
+                  BORRAR MAPA
 
                 </a>
 
 
-                
+
 
 
 
